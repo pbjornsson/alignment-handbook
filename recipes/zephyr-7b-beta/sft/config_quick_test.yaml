@@ -11,9 +11,12 @@ torch_dtype: bfloat16
 dataset_mixture:
   datasets:
     - id: HuggingFaceH4/ultrachat_200k
+      config: default
       split: train_sft
+      columns:
+        - messages
       weight: 0.005  # 0.5% of data (~1000 examples)
-preprocessing_num_workers: 2
+dataset_num_proc: 2
 
 # Training arguments
 output_dir: /content/drive/MyDrive/alignment-handbook/quick-test
