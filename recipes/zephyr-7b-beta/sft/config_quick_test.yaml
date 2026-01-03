@@ -8,10 +8,11 @@ model_name_or_path: HuggingFaceTB/SmolLM2-360M-Instruct  # Small but capable mod
 torch_dtype: bfloat16
 
 # Data arguments
-dataset_mixer:
-  HuggingFaceH4/ultrachat_200k: 0.005  # 0.5% of data (~1000 examples)
-dataset_splits:
-- train_sft
+dataset_mixture:
+  datasets:
+    - id: HuggingFaceH4/ultrachat_200k
+      split: train_sft
+      weight: 0.005  # 0.5% of data (~1000 examples)
 preprocessing_num_workers: 2
 
 # Training arguments
