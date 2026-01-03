@@ -1,0 +1,58 @@
+# Model arguments
+# Start with a SFT model (not a base model!)
+model_name_or_path: HuggingFaceTB/SmolLM2-1.7B-Instruct  # Example SFT model
+torch_dtype: bfloat16
+
+# Data training arguments
+dataset_mixture:
+  datasets:
+    # Main preference dataset
+    - id: HuggingFaceH4/ultrafeedback_binarized
+      config: default
+      split: train_prefs
+      columns:
+        - chosen
+        - rejected
+      weight: 1.0
+    # Validation data
+    - id: HuggingFaceH4/ultrafeedback_binarized
+      config: default
+      split: test_prefs
+      columns:
+        - chosen
+        - rejected
+      weight: 1.0
+  test_split_size: 500  # Use 500 examples for validation
+  seed: 42
+dataset_num_proc: 4
+
+# DPOTrainer arguments
+bf16: true
+beta: 0.1  # DPO regularization parameter (higher = stay closer to reference model)
+do_eval: true
+eval_strategy: steps
+eval_steps: 100
+gradient_accumulation_steps: 4  # Adjust based on GPU memory
+gradient_checkpointing: true
+gradient_checkpointing_kwargs:
+  use_reentrant: False
+hub_model_id: my-first-dpo-model  # Change this to your model name
+learning_rate: 5.0e-7
+log_level: info
+logging_steps: 10
+lr_scheduler_type: cosine
+max_length: 1024  # Maximum sequence length
+max_prompt_length: 512  # Maximum prompt length
+num_train_epochs: 1  # Start with 1 epoch
+optim: adamw_torch
+output_dir: data/my-first-dpo  # Local output directory
+per_device_train_batch_size: 1  # Adjust based on GPU memory (1 for T4, 4-8 for A100)
+per_device_eval_batch_size: 2
+push_to_hub: false  # Set to true when ready to share
+report_to:
+  - tensorboard
+save_strategy: "steps"
+save_steps: 500
+save_total_limit: 2  # Keep only 2 checkpoints
+seed: 42
+warmup_ratio: 0.1
